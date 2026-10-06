@@ -24,6 +24,7 @@ import { Card } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { Modal } from "@/components/ui/modal";
 import { MOCK_BOOKS, LIBRARY_CATEGORIES } from "@/lib/mock-data";
+import { getAdminBooks } from "@/lib/admin-data";
 import { Book, LibraryCategoryKey, DifficultyLevel, ReadingStatus } from "@/types/database.types";
 import confetti from "canvas-confetti";
 import { cn } from "@/lib/utils";
@@ -35,6 +36,10 @@ export default function StudentLibraryPage() {
   const [selectedStatus, setSelectedStatus] = React.useState<ReadingStatus | "all">("all");
   const [sortBy, setSortBy] = React.useState<"popular" | "newest" | "all">("all");
   const [search, setSearch] = React.useState("");
+
+  React.useEffect(() => {
+    setBooks(getAdminBooks());
+  }, []);
 
   // Audio Player Modal State
   const [playingBook, setPlayingBook] = React.useState<Book | null>(null);
@@ -454,7 +459,7 @@ export default function StudentLibraryPage() {
 
                     {/* Action Buttons: Оқу & Тыңдау */}
                     <div className="pt-4 border-t border-slate-100 flex items-center gap-2 mt-4">
-                      <Link href={`/student/library/${book.id}`} className="flex-1">
+                      <Link href={`/student/library/${book.id}/read`} className="flex-1">
                         <Button
                           variant="sky"
                           size="md"
@@ -541,7 +546,7 @@ export default function StudentLibraryPage() {
             </div>
 
             <div className="pt-2 flex gap-3">
-              <Link href={`/student/library/${playingBook.id}`} className="w-full">
+              <Link href={`/student/library/${playingBook.id}/read`} className="w-full">
                 <Button variant="sky" size="md" className="w-full justify-center">
                   <span>Мәтінімен бірге оқу 📖</span>
                 </Button>

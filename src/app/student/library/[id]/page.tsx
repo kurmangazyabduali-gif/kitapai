@@ -29,8 +29,8 @@ import { Badge } from "@/components/ui/badge";
 import { Progress } from "@/components/ui/progress";
 import { Modal } from "@/components/ui/modal";
 import { Input } from "@/components/ui/input";
-import { MOCK_BOOKS } from "@/lib/mock-data";
 import { Book } from "@/types/database.types";
+import { getFullBookById, getBookReadingPages } from "@/lib/book-progress";
 import { cn } from "@/lib/utils";
 
 export default function BookDetailPage() {
@@ -38,8 +38,9 @@ export default function BookDetailPage() {
   const router = useRouter();
   const bookId = (params?.id as string) || "book-1";
 
-  // Find book or fallback to first book
-  const book = MOCK_BOOKS.find((b) => b.id === bookId) || MOCK_BOOKS[0];
+  // Find book from admin storage or mock data with full fallback
+  const book = getFullBookById(bookId);
+  const bookPages = getBookReadingPages(book);
 
   // Reader State
   const [currentPage, setCurrentPage] = React.useState(1);
@@ -58,7 +59,7 @@ export default function BookDetailPage() {
   const [deedDescription, setDeedDescription] = React.useState("");
   const [quizAnswered, setQuizAnswered] = React.useState(false);
 
-  const totalPages = book.content?.length || 3;
+  const totalPages = bookPages.length || 3;
   const progressPercent = Math.round((currentPage / totalPages) * 100);
 
   const triggerConfetti = () => {
@@ -330,7 +331,7 @@ export default function BookDetailPage() {
               fontSizeClasses[fontSize]
             )}
           >
-            {book.content?.[currentPage - 1] || book.description}
+            {bookPages[currentPage - 1] || bookPages[0] || book.description}
           </p>
         </div>
 

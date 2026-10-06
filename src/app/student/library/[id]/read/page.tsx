@@ -37,13 +37,14 @@ import { Card } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { Progress } from "@/components/ui/progress";
 import { Modal } from "@/components/ui/modal";
-import { MOCK_BOOKS } from "@/lib/mock-data";
 import { Book, BookQuizQuestion } from "@/types/database.types";
 import {
   getBookProgress,
   saveBookProgress,
   completeBookReading,
   checkIfAlreadyRewarded,
+  getBookReadingPages,
+  getFullBookById,
   BookProgressRecord,
 } from "@/lib/book-progress";
 import { cn } from "@/lib/utils";
@@ -53,11 +54,10 @@ export default function BookReadingPage() {
   const router = useRouter();
   const bookId = (params?.id as string) || "book-1";
 
-  // Find book or fallback
-  const book: Book =
-    MOCK_BOOKS.find((b) => b.id === bookId) || MOCK_BOOKS[0];
-
-  const totalPages = book.content?.length || 3;
+  // Find book from admin storage or mock data with full fallback
+  const book: Book = getFullBookById(bookId);
+  const bookPages: string[] = getBookReadingPages(book);
+  const totalPages = bookPages.length || 3;
   const studentId = "student-1"; // Ayala
 
   // 1. Progress State (Loaded & Synced with Database / LocalStorage)
@@ -389,7 +389,7 @@ export default function BookReadingPage() {
   };
 
   const activeTheme = themeStyles[readingTheme];
-  const currentPageContent = book.content?.[currentPage - 1] || book.content?.[0] || "";
+  const currentPageContent = bookPages[currentPage - 1] || bookPages[0] || "";
 
   return (
     <div className={cn("min-h-screen transition-colors duration-300 pb-28", activeTheme.pageBg)}>

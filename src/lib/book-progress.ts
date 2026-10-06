@@ -233,3 +233,56 @@ export function completeBookReading(
   };
 }
 
+/**
+ * Retrieves the full guaranteed 3-page reading content for any book
+ */
+export function getBookReadingPages(book?: import("@/types/database.types").Book | null): string[] {
+  if (!book) {
+    return [
+      "Баяғы өткен заманда қазақ даласында ғибратты оқиғалар мен халық даналығына толы қызықты ертегілер мен әңгімелер көп болған екен.",
+      "Шығарма кейіпкерлері адалдық пен табандылықтың үлгісін көрсетіп, достарына көмектеседі және өздерінің асыл қасиеттерін шыңдайды.",
+      "Кітаптан алған өнеге әрбір оқырманның жүрегіне мейірім шуағын сеуіп, шынайы өмірде жақсы істер жасауға үндейді.",
+    ];
+  }
+
+  if (Array.isArray(book.content) && book.content.length >= 3) {
+    return book.content;
+  }
+
+  const existingPages = Array.isArray(book.content) && book.content.length > 0 ? book.content : [];
+
+  const page1 =
+    existingPages[0] ||
+    `${book.title} — ${book.author} жазған бастауыш сынып оқушыларына арналған ғибратты әрі өнегелі туынды. ${book.description || "Бұл шығарма баланы жақсылыққа, адалдық пен білімге құштар болуға баулиды."}`;
+
+  const page2 =
+    existingPages[1] ||
+    `Шығарма барысында кейіпкерлер түрлі қызықты оқиғалар мен сынақтарға тап болады. Олар қиындықтан қорықпай, тапқырлық пен адал достықтың арқасында барлық кедергілерді сәтті жеңіп шығады. Кітаптың басты өнегесі: ${book.moral_lesson || "Адал болу және жақындарыңа қамқорлық жасау."}`;
+
+  const page3 =
+    existingPages[2] ||
+    `Оқиға соңында барлық жақсы әрекеттер өз жемісін беріп, жақсылық пен әділдік салтанат құрады. Осы кітапты оқыған әрбір оқушы: «${book.good_deed_prompt || "Айналаңа мейірім шуағын шашып, бүгін бір жақсы іс жаса!"}» деген ізгі қағиданы жадында сақтайды. Өнеге: ${book.moral_lesson || "Жақсылық жасау — әрбір азаматтың парызы."}`;
+
+  return [page1, page2, page3];
+}
+
+/**
+ * Find book by ID from localStorage (admin content) or mock data
+ */
+export function getFullBookById(bookId: string): import("@/types/database.types").Book {
+  if (typeof window !== "undefined") {
+    try {
+      const raw = localStorage.getItem("kitaptan_admin_books");
+      if (raw) {
+        const adminBooks: import("@/types/database.types").Book[] = JSON.parse(raw);
+        const foundAdmin = adminBooks.find((b) => b.id === bookId);
+        if (foundAdmin) return foundAdmin;
+      }
+    } catch {
+      // ignore
+    }
+  }
+
+  const { MOCK_BOOKS } = require("@/lib/mock-data");
+  return MOCK_BOOKS.find((b: import("@/types/database.types").Book) => b.id === bookId) || MOCK_BOOKS[0];
+}

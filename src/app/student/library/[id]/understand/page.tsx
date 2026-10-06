@@ -37,7 +37,7 @@ import {
   QuizAnswerSubmission,
   SKILL_METADATA,
 } from "@/lib/ai-diagnost";
-import { completeBookReading } from "@/lib/book-progress";
+import { completeBookReading, getFullBookById } from "@/lib/book-progress";
 import { cn } from "@/lib/utils";
 
 export default function BookUnderstandPage() {
@@ -45,9 +45,8 @@ export default function BookUnderstandPage() {
   const router = useRouter();
   const bookId = (params?.id as string) || "book-1";
 
-  // Find book
-  const book: Book =
-    MOCK_BOOKS.find((b) => b.id === bookId) || MOCK_BOOKS[0];
+  // Find book from admin storage or mock data
+  const book: Book = getFullBookById(bookId);
 
   // Retrieve questions for this book
   const questions: BookQuestion[] =
