@@ -17,6 +17,7 @@ import {
 } from "lucide-react";
 import { Avatar } from "@/components/ui/avatar";
 import { Progress } from "@/components/ui/progress";
+import { useAuth } from "@/contexts/AuthContext";
 import { cn } from "@/lib/utils";
 import { MOCK_STUDENT } from "@/lib/mock-data";
 
@@ -26,28 +27,30 @@ export interface SidebarProps {
 
 export function Sidebar({ className }: SidebarProps) {
   const pathname = usePathname();
+  const { user, logout } = useAuth();
+  const currentUser = user || MOCK_STUDENT;
 
   const menuItems = [
     {
       name: "Басты бет",
-      href: "/dashboard",
+      href: "/student/dashboard",
       icon: Home,
       color: "text-edu-sky-500",
       bgHover: "hover:bg-edu-sky-50 hover:text-edu-sky-700",
       activeBg: "bg-edu-sky-500 text-white shadow-kid-sky",
     },
     {
-      name: "Менің кітаптарым",
-      href: "/dashboard#books",
+      name: "Кітап сөресі",
+      href: "/student/library",
       icon: BookOpen,
       color: "text-amber-500",
       bgHover: "hover:bg-amber-50 hover:text-amber-700",
       activeBg: "bg-amber-400 text-slate-900 shadow-kid-yellow",
-      badge: "3 жаңа",
+      badge: "120+ кітап",
     },
     {
       name: "Жақсы істерім",
-      href: "/dashboard#deeds",
+      href: "/student/good-deeds",
       icon: HeartHandshake,
       color: "text-rose-500",
       bgHover: "hover:bg-rose-50 hover:text-rose-700",
@@ -55,8 +58,8 @@ export function Sidebar({ className }: SidebarProps) {
       badge: "9 іс",
     },
     {
-      name: "Ойындар & Тесттер",
-      href: "/dashboard#games",
+      name: "Ойындар & Викториналар",
+      href: "/student/games",
       icon: Gamepad2,
       color: "text-purple-500",
       bgHover: "hover:bg-purple-50 hover:text-purple-700",
@@ -64,23 +67,15 @@ export function Sidebar({ className }: SidebarProps) {
     },
     {
       name: "Отбасы бұрышы",
-      href: "/dashboard#family",
+      href: "/student/family",
       icon: Users,
       color: "text-emerald-500",
       bgHover: "hover:bg-emerald-50 hover:text-emerald-700",
       activeBg: "bg-emerald-500 text-white shadow-kid-green",
     },
     {
-      name: "Жетістіктер",
-      href: "/dashboard#achievements",
-      icon: Award,
-      color: "text-yellow-600",
-      bgHover: "hover:bg-yellow-50 hover:text-yellow-700",
-      activeBg: "bg-yellow-400 text-slate-900 shadow-kid-yellow",
-    },
-    {
-      name: "Баптаулар",
-      href: "/dashboard#settings",
+      name: "Менің профилім",
+      href: "/student/profile",
       icon: Settings,
       color: "text-slate-400",
       bgHover: "hover:bg-slate-100 hover:text-slate-800",
@@ -99,26 +94,26 @@ export function Sidebar({ className }: SidebarProps) {
       <div className="space-y-6">
         <div className="p-4 rounded-3xl bg-gradient-to-br from-edu-sky-50 to-edu-yellow-50/60 border-2 border-edu-sky-100 shadow-sm flex flex-col items-center text-center relative overflow-hidden">
           <Avatar
-            emoji={MOCK_STUDENT.avatar_emoji}
-            name={MOCK_STUDENT.full_name}
+            emoji={currentUser.avatar_emoji || "🦁"}
+            name={currentUser.full_name || "Оқушы"}
             size="xl"
             borderVariant="gold"
             showLevelBadge
-            level={3}
+            level={currentUser.grade_level || 3}
             className="mb-2"
           />
           <h3 className="font-black text-slate-800 text-base leading-snug truncate w-full">
-            {MOCK_STUDENT.full_name}
+            {currentUser.full_name || "Алихан Сұлтан"}
           </h3>
           <p className="text-xs font-bold text-slate-500">
-            {MOCK_STUDENT.grade_level}-сынып • Озат оқырман
+            {currentUser.grade_level || 3}-сынып • Озат оқырман
           </p>
 
           {/* XP Progress Bar */}
           <div className="w-full mt-3 pt-2 border-t border-slate-200/60">
             <div className="flex justify-between text-[11px] font-black text-slate-500 mb-1">
-              <span>Деңгей 3</span>
-              <span className="text-edu-sky-600">850 / 1000 XP</span>
+              <span>Деңгей {currentUser.grade_level || 3}</span>
+              <span className="text-edu-sky-600">{currentUser.stars || 850} XP</span>
             </div>
             <Progress value={85} variant="sky" height="sm" />
           </div>
@@ -186,13 +181,13 @@ export function Sidebar({ className }: SidebarProps) {
           </div>
         </div>
 
-        <Link
-          href="/"
-          className="flex items-center gap-3 px-4 py-2.5 rounded-2xl text-xs font-bold text-slate-400 hover:text-slate-700 hover:bg-slate-50 transition-colors w-full"
+        <button
+          onClick={logout}
+          className="flex items-center gap-3 px-4 py-2.5 rounded-2xl text-xs font-bold text-slate-400 hover:text-rose-600 hover:bg-rose-50 transition-colors w-full"
         >
           <LogOut className="w-4 h-4" />
           <span>Платформадан шығу</span>
-        </Link>
+        </button>
       </div>
     </aside>
   );

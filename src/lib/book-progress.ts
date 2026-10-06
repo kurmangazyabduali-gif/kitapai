@@ -1,4 +1,6 @@
-import { BookProgress, ReadingStatus } from "@/types/database.types";
+import { Book, BookProgress, ReadingStatus } from "@/types/database.types";
+import { recordPointsTransaction } from "@/lib/gamification";
+import { MOCK_BOOKS } from "@/lib/mock-data";
 
 export interface BookProgressRecord {
   student_id: string;
@@ -199,7 +201,6 @@ export function completeBookReading(
 
         // Record transaction in Points Engine
         try {
-          const { recordPointsTransaction } = require("@/lib/gamification");
           recordPointsTransaction({
             student_id: studentId,
             action_type: "book_read",
@@ -283,6 +284,5 @@ export function getFullBookById(bookId: string): import("@/types/database.types"
     }
   }
 
-  const { MOCK_BOOKS } = require("@/lib/mock-data");
-  return MOCK_BOOKS.find((b: import("@/types/database.types").Book) => b.id === bookId) || MOCK_BOOKS[0];
+  return MOCK_BOOKS.find((b: Book) => b.id === bookId) || MOCK_BOOKS[0];
 }

@@ -8,13 +8,22 @@ import { Button } from "@/components/ui/button";
 import { Avatar } from "@/components/ui/avatar";
 import { cn } from "@/lib/utils";
 import { MOCK_STUDENT } from "@/lib/mock-data";
+import { useAuth } from "@/contexts/AuthContext";
 
 export function Header() {
   const pathname = usePathname();
+  const { user, role, getRoleDashboardUrl } = useAuth();
   const [mobileMenuOpen, setMobileMenuOpen] = React.useState(false);
 
-  const isDashboard = pathname.startsWith("/dashboard");
+  const currentUser = user || MOCK_STUDENT;
+  const isDashboard =
+    pathname.startsWith("/dashboard") ||
+    pathname.startsWith("/student") ||
+    pathname.startsWith("/teacher") ||
+    pathname.startsWith("/parent") ||
+    pathname.startsWith("/admin");
   const isAuthPage = pathname.startsWith("/auth");
+  const dashboardHref = role ? getRoleDashboardUrl(role) : "/student/dashboard";
 
   const navLinks = [
     { name: "Басты бет", href: "/" },
@@ -73,56 +82,68 @@ export function Header() {
           <div className="hidden sm:flex items-center gap-3 bg-amber-50/80 border border-amber-200/80 px-3.5 py-1.5 rounded-full shadow-inner">
             <div className="flex items-center gap-1 text-xs font-black text-amber-900" title="Алтын тиындар">
               <span>🪙</span>
-              <span>{MOCK_STUDENT.coins}</span>
+              <span>{currentUser.coins ?? MOCK_STUDENT.coins}</span>
             </div>
             <div className="w-px h-3.5 bg-amber-200" />
             <div className="flex items-center gap-1 text-xs font-black text-amber-900" title="Жұлдыздар">
               <Sparkles className="w-3.5 h-3.5 text-amber-500 fill-amber-400" />
-              <span>{MOCK_STUDENT.stars}</span>
+              <span>{currentUser.stars ?? MOCK_STUDENT.stars}</span>
             </div>
             <div className="w-px h-3.5 bg-amber-200" />
             <div className="flex items-center gap-1 text-xs font-black text-rose-600" title="Оқу сериясы">
               <Flame className="w-3.5 h-3.5 fill-rose-500 text-rose-500" />
-              <span>{MOCK_STUDENT.streak_days} күн</span>
+              <span>{currentUser.streak_days ?? MOCK_STUDENT.streak_days} күн</span>
             </div>
           </div>
 
           {/* User Profile or Auth Buttons */}
-          {isDashboard ? (
-            <div className="flex items-center gap-3">
-              <Link href="/dashboard" className="flex items-center gap-2.5 p-1 rounded-2xl hover:bg-slate-100 transition-colors">
+          {user ? (
+            <div className="flex items-center gap-2 sm:gap-3">
+              <Link
+                href={dashboardHref}
+                className="flex items-center gap-2.5 p-1.5 sm:px-3 sm:py-1.5 rounded-2xl bg-slate-50 hover:bg-edu-sky-50 border border-slate-200/80 hover:border-edu-sky-300 transition-all shadow-sm group"
+                title="Жеке кабинетке өту"
+              >
                 <Avatar
-                  emoji={MOCK_STUDENT.avatar_emoji}
-                  name={MOCK_STUDENT.full_name}
+                  emoji={currentUser.avatar_emoji || "🦁"}
+                  name={currentUser.full_name || "Пайдаланушы"}
                   size="sm"
                   borderVariant="gold"
                 />
                 <div className="hidden md:block text-left">
-                  <p className="text-xs font-black text-slate-800 leading-tight truncate max-w-[110px]">
-                    {MOCK_STUDENT.full_name}
+                  <p className="text-xs font-black text-slate-800 leading-tight truncate max-w-[120px] group-hover:text-edu-sky-700">
+                    {currentUser.full_name}
                   </p>
-                  <span className="text-[10px] font-bold text-edu-sky-600 bg-edu-sky-100 px-1.5 py-0.2 rounded-full">
-                    {MOCK_STUDENT.grade_level}-сынып
+                  <span className="text-[10px] font-bold text-edu-sky-700 bg-edu-sky-100/90 px-1.5 py-0.2 rounded-full">
+                    {currentUser.grade_level ? `${currentUser.grade_level}-сынып` : currentUser.role}
                   </span>
                 </div>
+              </Link>
+
+              <Link href={dashboardHref} className="hidden sm:inline-block">
+                <Button variant="sky" size="sm" className="font-extrabold shadow-sm">
+                  <span>Кабинетке өту 🚀</span>
+                </Button>
+              </Link>
+
+              <Link href="/auth/login" title="Басқа аккаунтпен кіру">
+                <Button variant="ghost" size="sm" className="hidden lg:inline-flex text-xs text-slate-500 font-bold hover:text-slate-900">
+                  <LogIn className="w-3.5 h-3.5 mr-1" />
+                  <span>Кіру</span>
+                </Button>
               </Link>
             </div>
           ) : (
             <div className="flex items-center gap-2">
               <Link href="/auth/login">
-                <Button variant="ghost" size="sm" className="hidden sm:inline-flex font-bold">
+                <Button variant="ghost" size="sm" className="font-bold">
                   <LogIn className="w-4 h-4" />
-                  Кіру
+                  <span>Кіру</span>
                 </Button>
               </Link>
               <Link href="/auth/register">
                 <Button variant="yellow" size="sm" className="font-extrabold shadow-sm">
-                  Тіркелу 🎒
-                </Button>
-              </Link>
-              <Link href="/dashboard" className="hidden sm:inline-block">
-                <Button variant="sky" size="sm" className="font-extrabold">
-                  Кабинетке өту 🚀
+                  <span>Тіркелу 🎒</span>
                 </Button>
               </Link>
             </div>
@@ -140,39 +161,58 @@ export function Header() {
       </div>
 
       {/* Mobile Drawer Navigation */}
-      {mobileMenuOpen && !isDashboard && (
+      {mobileMenuOpen && (
         <div className="lg:hidden bg-white border-b-2 border-slate-100 px-4 pt-2 pb-6 space-y-3 animate-in slide-in-from-top-2">
-          <div className="flex flex-col space-y-1">
-            {navLinks.map((link) => (
-              <Link
-                key={link.name}
-                href={link.href}
-                onClick={() => setMobileMenuOpen(false)}
-                className="px-4 py-3 rounded-2xl text-sm font-bold text-slate-700 hover:bg-edu-sky-50 hover:text-edu-sky-700 transition-colors"
-              >
-                {link.name}
-              </Link>
-            ))}
-          </div>
+          {!isDashboard && (
+            <div className="flex flex-col space-y-1">
+              {navLinks.map((link) => (
+                <Link
+                  key={link.name}
+                  href={link.href}
+                  onClick={() => setMobileMenuOpen(false)}
+                  className="px-4 py-3 rounded-2xl text-sm font-bold text-slate-700 hover:bg-edu-sky-50 hover:text-edu-sky-700 transition-colors"
+                >
+                  {link.name}
+                </Link>
+              ))}
+            </div>
+          )}
 
           <div className="pt-2 border-t border-slate-100 flex flex-col gap-2">
-            <Link href="/dashboard" onClick={() => setMobileMenuOpen(false)}>
-              <Button variant="sky" className="w-full justify-center">
-                Оқушы кабинетіне кіру 🚀
-              </Button>
-            </Link>
-            <div className="grid grid-cols-2 gap-2">
-              <Link href="/auth/login" onClick={() => setMobileMenuOpen(false)}>
-                <Button variant="outline" className="w-full justify-center text-xs">
-                  Кіру
-                </Button>
-              </Link>
-              <Link href="/auth/register" onClick={() => setMobileMenuOpen(false)}>
-                <Button variant="yellow" className="w-full justify-center text-xs">
-                  Тіркелу
-                </Button>
-              </Link>
-            </div>
+            {user ? (
+              <>
+                <Link href={dashboardHref} onClick={() => setMobileMenuOpen(false)}>
+                  <Button variant="sky" className="w-full justify-center font-black">
+                    <span>Жеке кабинетке өту ({currentUser.full_name}) 🚀</span>
+                  </Button>
+                </Link>
+                <div className="grid grid-cols-2 gap-2">
+                  <Link href="/auth/login" onClick={() => setMobileMenuOpen(false)}>
+                    <Button variant="outline" className="w-full justify-center text-xs font-bold">
+                      Басқа аккаунт
+                    </Button>
+                  </Link>
+                  <Link href="/auth/register" onClick={() => setMobileMenuOpen(false)}>
+                    <Button variant="yellow" className="w-full justify-center text-xs font-bold">
+                      Жаңа тіркелу
+                    </Button>
+                  </Link>
+                </div>
+              </>
+            ) : (
+              <div className="grid grid-cols-2 gap-2">
+                <Link href="/auth/login" onClick={() => setMobileMenuOpen(false)}>
+                  <Button variant="outline" className="w-full justify-center text-xs font-bold">
+                    Кіру
+                  </Button>
+                </Link>
+                <Link href="/auth/register" onClick={() => setMobileMenuOpen(false)}>
+                  <Button variant="yellow" className="w-full justify-center text-xs font-bold">
+                    Тіркелу
+                  </Button>
+                </Link>
+              </div>
+            )}
           </div>
         </div>
       )}

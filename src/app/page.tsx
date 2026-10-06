@@ -30,8 +30,11 @@ import { FormulaSteps } from "@/components/ui/formula-steps";
 import { Modal } from "@/components/ui/modal";
 import { MOCK_BOOKS, MOCK_GOOD_DEEDS, MOCK_ACHIEVEMENTS } from "@/lib/mock-data";
 import { Book } from "@/types/database.types";
+import { useAuth } from "@/contexts/AuthContext";
 
 export default function LandingPage() {
+  const { user, role, getRoleDashboardUrl } = useAuth();
+  const dashboardHref = role ? getRoleDashboardUrl(role) : "/student/dashboard";
   const [selectedGrade, setSelectedGrade] = React.useState<number | "all">("all");
   const [activeBookModal, setActiveBookModal] = React.useState<Book | null>(null);
   const [faqOpen, setFaqOpen] = React.useState<number | null>(null);
@@ -150,9 +153,9 @@ export default function LandingPage() {
                   </Button>
                 </Link>
 
-                <Link href="/dashboard" className="w-full sm:w-auto">
+                <Link href={dashboardHref} className="w-full sm:w-auto">
                   <Button variant="sky" size="xl" className="w-full justify-center text-base sm:text-lg">
-                    <span>Оқушы кабинеті 🚀</span>
+                    <span>{user ? "Жеке кабинетке өту 🚀" : "Оқушы кабинеті 🚀"}</span>
                   </Button>
                 </Link>
 
@@ -414,9 +417,11 @@ export default function LandingPage() {
                   <span className="text-xs font-bold text-slate-400">
                     ⏱️ ~{book.reading_time_minutes} минут оқу
                   </span>
-                  <Button variant="sky" size="sm" className="text-xs">
-                    Оқу & Тапсырма 📖
-                  </Button>
+                  <Link href={`/student/library/${book.id}/read`} onClick={(e) => e.stopPropagation()}>
+                    <Button variant="sky" size="sm" className="text-xs">
+                      Оқу & Тапсырма 📖
+                    </Button>
+                  </Link>
                 </div>
               </Card>
             ))}
@@ -686,7 +691,7 @@ export default function LandingPage() {
             </div>
 
             <div className="pt-4 flex gap-3">
-              <Link href="/dashboard" className="w-full">
+              <Link href={`/student/library/${activeBookModal.id}/read`} className="w-full">
                 <Button variant="sky" className="w-full justify-center">
                   Оқуды бастау (+{activeBookModal.points_reward} балл) 🚀
                 </Button>

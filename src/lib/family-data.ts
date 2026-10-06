@@ -3,6 +3,7 @@ import {
   FamilySubmission,
   FamilyAchievement,
 } from "@/types/database.types";
+import { recordPointsTransaction } from "@/lib/gamification";
 
 export const FAMILY_CHALLENGES: FamilyChallenge[] = [
   {
@@ -335,7 +336,6 @@ export function approveFamilySubmission(
 
       // Record in unified Points Engine
       try {
-        const { recordPointsTransaction } = require("@/lib/gamification");
         const targetSub = updated.find((s) => s.id === submissionId);
         recordPointsTransaction({
           student_id: targetSub?.student_id || "student-1",

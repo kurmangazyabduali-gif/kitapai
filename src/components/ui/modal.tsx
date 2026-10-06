@@ -59,7 +59,7 @@ export function Modal({
       {/* Modal Dialog Content */}
       <div
         className={cn(
-          "relative w-full bg-white rounded-4xl p-6 sm:p-8 shadow-2xl border-4 border-edu-sky-100 z-10 scale-100 transition-all transform",
+          "relative w-full bg-white rounded-4xl p-6 sm:p-8 shadow-2xl border-4 border-edu-sky-100 z-10 scale-100 transition-all transform max-h-[90vh] overflow-y-auto",
           maxWidthStyles[maxWidth]
         )}
       >

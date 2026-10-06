@@ -9,6 +9,7 @@ import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Card } from "@/components/ui/card";
 import { UserRole, GradeLevel } from "@/types/database.types";
+import { useAuth } from "@/contexts/AuthContext";
 import { cn } from "@/lib/utils";
 
 const AVATAR_OPTIONS = [
@@ -23,6 +24,7 @@ const AVATAR_OPTIONS = [
 function RegisterContent() {
   const router = useRouter();
   const searchParams = useSearchParams();
+  const { register } = useAuth();
   const initialRole = (searchParams.get("role") as UserRole) || "student";
 
   const [role, setRole] = React.useState<UserRole>(initialRole);
@@ -34,7 +36,7 @@ function RegisterContent() {
   const [password, setPassword] = React.useState("");
   const [loading, setLoading] = React.useState(false);
 
-  const handleRegister = (e: React.FormEvent) => {
+  const handleRegister = async (e: React.FormEvent) => {
     e.preventDefault();
     setLoading(true);
 
@@ -44,10 +46,21 @@ function RegisterContent() {
       origin: { y: 0.5 },
     });
 
-    setTimeout(() => {
+    try {
+      await register({
+        fullName: fullName.trim() || (role === "student" ? "Алихан Сұлтан" : "Пайдаланушы"),
+        email: email.trim() || `user-${Date.now()}@kitaptan.kz`,
+        password,
+        role,
+        gradeLevel: role === "student" ? grade : undefined,
+        school: school.trim() || "№84 мектеп-лицейі",
+        avatarEmoji: selectedAvatar,
+      });
+    } catch (err) {
+      console.error("Register error:", err);
+    } finally {
       setLoading(false);
-      router.push("/dashboard");
-    }, 800);
+    }
   };
 
   return (

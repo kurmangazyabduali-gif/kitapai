@@ -38,6 +38,7 @@ export default function DashboardPage() {
     if (role === "teacher") router.replace("/teacher/dashboard");
     else if (role === "parent") router.replace("/parent/dashboard");
     else if (role === "admin") router.replace("/admin/dashboard");
+    else if (role === "student") router.replace("/student/dashboard");
   }, [role, router]);
 
   const [student, setStudent] = React.useState(user || MOCK_STUDENT);
@@ -197,45 +198,47 @@ export default function DashboardPage() {
                   Формула бойынша прогресс:
                 </p>
                 <div className="grid grid-cols-5 gap-1.5 text-center text-[10px] font-black">
-                  <div className="p-2 rounded-xl bg-emerald-100 text-emerald-800 border border-emerald-300">
+                  <Link href={`/student/library/${activeBook.id}/read`} className="p-2 rounded-xl bg-emerald-100 text-emerald-800 border border-emerald-300 hover:scale-105 transition-transform">
                     ✓ 1. ОҚЫ
-                  </div>
-                  <div className="p-2 rounded-xl bg-emerald-100 text-emerald-800 border border-emerald-300">
+                  </Link>
+                  <Link href={`/student/library/${activeBook.id}/understand`} className="p-2 rounded-xl bg-emerald-100 text-emerald-800 border border-emerald-300 hover:scale-105 transition-transform">
                     ✓ 2. ТҮСІН
-                  </div>
-                  <div className="p-2 rounded-xl bg-amber-100 text-amber-900 border border-amber-300 animate-pulse">
+                  </Link>
+                  <Link href="/student/games" className="p-2 rounded-xl bg-amber-100 text-amber-900 border border-amber-300 animate-pulse hover:scale-105 transition-transform">
                     3. ОЙНА 🎮
-                  </div>
-                  <div className="p-2 rounded-xl bg-slate-100 text-slate-400">
+                  </Link>
+                  <Link href="/student/good-deeds" className="p-2 rounded-xl bg-rose-50 text-rose-700 border border-rose-200 hover:scale-105 transition-transform">
                     4. ЖАҚСЫ ІС
-                  </div>
-                  <div className="p-2 rounded-xl bg-slate-100 text-slate-400">
+                  </Link>
+                  <Link href="/student/family" className="p-2 rounded-xl bg-purple-50 text-purple-700 border border-purple-200 hover:scale-105 transition-transform">
                     5. ОТБАСЫ
-                  </div>
+                  </Link>
                 </div>
               </div>
             </div>
 
             {/* Book Action Buttons */}
             <div className="mt-6 pt-4 border-t border-slate-100 flex flex-wrap gap-3">
-              <Button
-                variant="sky"
-                size="md"
-                onClick={triggerConfetti}
-                className="flex-1 justify-center"
-              >
-                <BookOpen className="w-4 h-4" />
-                <span>Оқуды жалғастыру</span>
-              </Button>
-              <Button
-                variant="purple"
-                size="md"
-                onClick={() => setIsQuizModalOpen(true)}
-                className="flex-1 justify-center"
-              >
-                <Gamepad2 className="w-4 h-4" />
-                <span>Викторинаны шешу (+30 🪙)</span>
-              </Button>
+              <Link href={`/student/library/${activeBook.id}/read`} className="flex-1">
+                <Button
+                  variant="sky"
+                  size="md"
+                  className="w-full justify-center"
+                >
+                  <BookOpen className="w-4 h-4" />
+                  <span>Оқуды жалғастыру 📖</span>
+                </Button>
+              </Link>
+              <Link href={`/student/library/${activeBook.id}/understand`} className="flex-1">
+                <Button
+                  variant="purple"
+                  size="md"
+                  className="w-full justify-center"
+                >
+                  <Gamepad2 className="w-4 h-4" />
+                  <span>Викторинаны шешу (+30 🪙)</span>
+                </Button>
+              </Link>
             </div>
           </Card>
         </div>
@@ -382,9 +385,11 @@ export default function DashboardPage() {
                 <span className="text-[11px] font-bold text-slate-400">
                   ⏱️ ~{book.reading_time_minutes} мин
                 </span>
-                <Button variant="sky" size="sm" className="text-xs">
-                  Таңдау 📖
-                </Button>
+                <Link href={`/student/library/${book.id}/read`}>
+                  <Button variant="sky" size="sm" className="text-xs">
+                    Таңдау 📖
+                  </Button>
+                </Link>
               </div>
             </Card>
           ))}

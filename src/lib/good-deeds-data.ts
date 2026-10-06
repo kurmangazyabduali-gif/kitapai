@@ -4,6 +4,7 @@ import {
   GoodDeedTask,
   GoodDeedSubmission,
 } from "@/types/database.types";
+import { recordPointsTransaction } from "@/lib/gamification";
 
 export const MORAL_VALUES: MoralValue[] = [
   {
@@ -354,7 +355,6 @@ export function approveGoodDeedSubmission(
       localStorage.setItem(SUBMISSIONS_STORAGE_KEY, JSON.stringify(updated));
       const targetSub = updated.find((s) => s.id === submissionId);
       if (targetSub) {
-        const { recordPointsTransaction } = require("@/lib/gamification");
         recordPointsTransaction({
           student_id: targetSub.student_id || "student-1",
           action_type: "good_deed",
