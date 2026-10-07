@@ -89,8 +89,8 @@ export default function ParentDashboardPage() {
   const child = {
     full_name: "Аяла Ерболқызы",
     avatar_emoji: "🌸",
-    class_name: "3 «А»",
-    school_name: "№84 мектеп-лицейі, Астана",
+    class_name: "2 «А»",
+    school_name: "№271 мектеп-лицейі, Астана",
     points: 280,
     coins: 340,
     books_read: 12,
@@ -225,7 +225,7 @@ export default function ParentDashboardPage() {
           <p className="text-[11px] font-bold text-slate-400 uppercase tracking-wider">Оқыған кітап</p>
           <p className="text-xl font-black text-slate-900">{child.books_read} <span className="text-xs font-bold text-slate-500">кітап</span></p>
           <span className="text-[10px] font-bold text-sky-700 bg-sky-50 px-2 py-0.5 rounded-full inline-block">
-            3 «А»-да озат
+            2 «А»-да озат
           </span>
         </div>
 

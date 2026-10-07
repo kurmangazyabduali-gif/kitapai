@@ -42,13 +42,13 @@ export default function StudentProfilePage() {
             size="2xl"
             borderVariant="gold"
             showLevelBadge
-            level={user?.grade_level || 3}
+            level={user?.grade_level || 2}
           />
 
           <div className="space-y-2 flex-1">
             <div className="flex flex-wrap items-center justify-center sm:justify-start gap-2">
               <Badge variant="sky" size="md">
-                {user?.grade_level || 3}-сынып оқушысы
+                {user?.grade_level || 2}-сынып оқушысы
               </Badge>
               <Badge variant="yellow" size="md">
                 Озат оқырман 🌟
@@ -56,12 +56,12 @@ export default function StudentProfilePage() {
             </div>
 
             <h1 className="text-2xl sm:text-3xl font-black text-slate-900">
-              {user?.full_name || "Алихан Сұлтан"}
+              {user?.full_name || "Аяла Ерболқызы"}
             </h1>
 
             <p className="text-xs sm:text-sm text-slate-500 font-bold flex items-center justify-center sm:justify-start gap-1.5">
               <School className="w-4 h-4 text-edu-sky-600" />
-              <span>{user?.school || "№84 мектеп-лицейі, Астана"}</span>
+              <span>{user?.school || "№271 мектеп-лицейі, Астана"}</span>
             </p>
           </div>
 

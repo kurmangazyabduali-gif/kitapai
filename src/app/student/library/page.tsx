@@ -25,6 +25,8 @@ import { Badge } from "@/components/ui/badge";
 import { Modal } from "@/components/ui/modal";
 import { MOCK_BOOKS, LIBRARY_CATEGORIES } from "@/lib/mock-data";
 import { getAdminBooks } from "@/lib/admin-data";
+import { getBookReadingPages } from "@/lib/book-progress";
+import { fairyTaleAudio } from "@/lib/audio-engine";
 import { Book, LibraryCategoryKey, DifficultyLevel, ReadingStatus } from "@/types/database.types";
 import confetti from "canvas-confetti";
 import { cn } from "@/lib/utils";
@@ -44,7 +46,42 @@ export default function StudentLibraryPage() {
   // Audio Player Modal State
   const [playingBook, setPlayingBook] = React.useState<Book | null>(null);
   const [isPlaying, setIsPlaying] = React.useState(false);
-  const [audioProgress, setAudioProgress] = React.useState(35);
+  const [audioProgress, setAudioProgress] = React.useState(0);
+  const [audioSeconds, setAudioSeconds] = React.useState(0);
+
+  React.useEffect(() => {
+    const unsubscribe = fairyTaleAudio.subscribe((state) => {
+      setIsPlaying(state.isPlaying);
+      setAudioProgress(state.progressPercent);
+      setAudioSeconds(state.currentTimeSec);
+    });
+    return () => {
+      unsubscribe();
+      fairyTaleAudio.stop();
+    };
+  }, []);
+
+  const handleOpenAudio = (book: Book, e: React.MouseEvent) => {
+    e.stopPropagation();
+    e.preventDefault();
+    setPlayingBook(book);
+    const pages = getBookReadingPages(book);
+    const textToRead = pages.join(" ") || book.description;
+    fairyTaleAudio.playStory(textToRead, {
+      audioUrl: book.audio_url,
+      speed: 1.0,
+    });
+  };
+
+  const toggleModalAudio = () => {
+    if (!playingBook) return;
+    const pages = getBookReadingPages(playingBook);
+    const textToRead = pages.join(" ") || playingBook.description;
+    fairyTaleAudio.toggle(textToRead, {
+      audioUrl: playingBook.audio_url,
+      speed: 1.0,
+    });
+  };
 
   // Toggle Favorite
   const toggleFavorite = (bookId: string, e: React.MouseEvent) => {
@@ -93,14 +130,6 @@ export default function StudentLibraryPage() {
     if (sortBy === "newest") return new Date(b.created_at).getTime() - new Date(a.created_at).getTime();
     return 0;
   });
-
-  const handleOpenAudio = (book: Book, e: React.MouseEvent) => {
-    e.stopPropagation();
-    e.preventDefault();
-    setPlayingBook(book);
-    setIsPlaying(true);
-    setAudioProgress(25);
-  };
 
   return (
     <div className="space-y-8">
@@ -497,7 +526,7 @@ export default function StudentLibraryPage() {
           isOpen={!!playingBook}
           onClose={() => {
             setPlayingBook(null);
-            setIsPlaying(false);
+            fairyTaleAudio.stop();
           }}
           title={`«${playingBook.title}» аудиоертегісі`}
           description={`${playingBook.author} • Ұзақтығы: ${playingBook.audio_duration || "04:15"}`}
@@ -523,7 +552,7 @@ export default function StudentLibraryPage() {
 
               <div className="w-full space-y-1">
                 <div className="flex justify-between text-xs font-bold text-sky-100">
-                  <span>01:25</span>
+                  <span>{formatAudioTime(audioSeconds)}</span>
                   <span>{playingBook.audio_duration || "04:15"}</span>
                 </div>
                 <div className="w-full h-2.5 rounded-full bg-white/30 overflow-hidden cursor-pointer">
@@ -538,15 +567,20 @@ export default function StudentLibraryPage() {
             {/* Audio Controls */}
             <div className="flex items-center justify-center gap-4">
               <button
-                onClick={() => setIsPlaying(!isPlaying)}
-                className="w-16 h-16 rounded-full bg-amber-400 text-slate-950 flex items-center justify-center text-2xl font-black shadow-lg shadow-amber-200 border-4 border-white active:scale-95 transition-transform"
+                onClick={toggleModalAudio}
+                className="w-16 h-16 rounded-full bg-amber-400 hover:bg-amber-300 text-slate-950 flex items-center justify-center text-2xl font-black shadow-lg shadow-amber-200 border-4 border-white active:scale-95 transition-transform"
+                title={isPlaying ? "Тоқтату" : "Тыңдау"}
               >
                 {isPlaying ? <Pause className="w-7 h-7 fill-slate-950" /> : <Play className="w-7 h-7 fill-slate-950 ml-1" />}
               </button>
             </div>
 
             <div className="pt-2 flex gap-3">
-              <Link href={`/student/library/${playingBook.id}/read`} className="w-full">
+              <Link
+                href={`/student/library/${playingBook.id}/read`}
+                onClick={() => fairyTaleAudio.stop()}
+                className="w-full"
+              >
                 <Button variant="sky" size="md" className="w-full justify-center">
                   <span>Мәтінімен бірге оқу 📖</span>
                 </Button>

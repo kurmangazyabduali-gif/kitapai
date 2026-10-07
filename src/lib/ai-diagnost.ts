@@ -229,7 +229,7 @@ export function generateStudentAIDiagnosis(
 export function getMockTeacherClassDiagnostic(): TeacherClassSkillDiagnostic {
   return {
     class_id: "class-1",
-    class_name: "3 «А» сыныбы",
+    class_name: "2 «А» сыныбы",
     total_students: 25,
     tested_students: 22,
     average_comprehension_score: 78,

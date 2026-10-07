@@ -41,8 +41,8 @@ export default function AdminUsersPage() {
   const [formName, setFormName] = React.useState("");
   const [formEmail, setFormEmail] = React.useState("");
   const [formRole, setFormRole] = React.useState<UserRole>("student");
-  const [formSchool, setFormSchool] = React.useState("№84 мектеп-лицейі");
-  const [formClass, setFormClass] = React.useState("3 «А»");
+  const [formSchool, setFormSchool] = React.useState("№271 мектеп-лицейі");
+  const [formClass, setFormClass] = React.useState("2 «А»");
 
   const reloadUsers = React.useCallback(() => {
     setUsers(getAdminUsersList());
@@ -57,8 +57,8 @@ export default function AdminUsersPage() {
     setFormName("");
     setFormEmail("");
     setFormRole("student");
-    setFormSchool("№84 мектеп-лицейі");
-    setFormClass("3 «А»");
+    setFormSchool("№271 мектеп-лицейі");
+    setFormClass("2 «А»");
     setIsAddModalOpen(true);
   };
 
@@ -67,8 +67,8 @@ export default function AdminUsersPage() {
     setFormName(user.full_name);
     setFormEmail(user.email);
     setFormRole(user.role);
-    setFormSchool(user.school || "№84 мектеп-лицейі");
-    setFormClass(user.class_name || "3 «А»");
+    setFormSchool(user.school || "№271 мектеп-лицейі");
+    setFormClass(user.class_name || "2 «А»");
     setIsAddModalOpen(true);
   };
 
@@ -340,7 +340,7 @@ export default function AdminUsersPage() {
               <div>
                 <label className="text-xs font-black text-slate-800">Сыныбы:</label>
                 <Input
-                  placeholder="3 «А»"
+                  placeholder="2 «А»"
                   value={formClass}
                   onChange={(e) => setFormClass(e.target.value)}
                 />
@@ -349,7 +349,7 @@ export default function AdminUsersPage() {
             <div>
               <label className="text-xs font-black text-slate-800">Мектеп:</label>
               <Input
-                placeholder="№84 мектеп-лицейі"
+                placeholder="№271 мектеп-лицейі"
                 value={formSchool}
                 onChange={(e) => setFormSchool(e.target.value)}
               />

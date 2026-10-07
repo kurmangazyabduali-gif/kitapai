@@ -70,7 +70,7 @@ export function ParentSidebar({ className }: { className?: string }) {
             Ата-ана кабинеті
           </p>
           <span className="text-[11px] font-extrabold text-slate-500 bg-white px-2.5 py-0.5 rounded-full border border-slate-200 mt-2">
-            Баласы: Алихан (3 «А»)
+            Баласы: Аяла (2 «А»)
           </span>
         </div>
 

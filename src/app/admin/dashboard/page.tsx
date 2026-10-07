@@ -178,7 +178,7 @@ export default function AdminDashboardPage() {
           </h1>
 
           <p className="text-slate-300 text-xs sm:text-sm leading-relaxed">
-            №84 мектеп-лицейі бойынша <strong>16 сынып</strong>, <strong>486 оқушы</strong> және <strong>24 мұғалімнің</strong> біртұтас мониторингі мен контентті басқару жүйесі.
+            №271 мектеп-лицейі бойынша <strong>16 сынып</strong>, <strong>486 оқушы</strong> және <strong>24 мұғалімнің</strong> біртұтас мониторингі мен контентті басқару жүйесі.
           </p>
         </div>
 

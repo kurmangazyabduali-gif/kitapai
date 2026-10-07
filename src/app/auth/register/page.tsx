@@ -48,12 +48,12 @@ function RegisterContent() {
 
     try {
       await register({
-        fullName: fullName.trim() || (role === "student" ? "Алихан Сұлтан" : "Пайдаланушы"),
+        fullName: fullName.trim() || (role === "student" ? "Аяла Ерболқызы" : "Пайдаланушы"),
         email: email.trim() || `user-${Date.now()}@kitaptan.kz`,
         password,
         role,
         gradeLevel: role === "student" ? grade : undefined,
-        school: school.trim() || "№84 мектеп-лицейі",
+        school: school.trim() || "№271 мектеп-лицейі",
         avatarEmoji: selectedAvatar,
       });
     } catch (err) {
@@ -213,7 +213,7 @@ function RegisterContent() {
             <Input
               label="Мектеп немесе қала"
               type="text"
-              placeholder="Мысалы: №84 мектеп-лицей, Астана"
+              placeholder="Мысалы: №271 мектеп-лицей, Астана"
               icon={<School className="w-5 h-5" />}
               value={school}
               onChange={(e) => setSchool(e.target.value)}

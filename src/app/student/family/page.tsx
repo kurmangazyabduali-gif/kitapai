@@ -119,7 +119,7 @@ export default function StudentFamilyPage() {
         student_id: user?.id || "student-1",
         student_name: user?.full_name || "Аяла Ерболқызы",
         student_avatar: "🌸",
-        student_class: "3 «А»",
+        student_class: user?.class_name || "2 «А»",
         text: answerText.trim(),
         photo_url: selectedPhoto || undefined,
         date: submissionDate,
@@ -796,7 +796,7 @@ export default function StudentFamilyPage() {
                     {user?.full_name || "Аяла Ерболқызы"} және Отбасы
                   </h4>
                   <p className="text-xs font-bold text-slate-500">
-                    3 «А» сыныбы • №10 мектеп-гимназия
+                    {user?.class_name || "2 «А» сыныбы"} • {user?.school || "№271 мектеп-лицейі"}
                   </p>
                 </div>
 

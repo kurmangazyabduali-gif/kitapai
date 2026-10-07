@@ -33,7 +33,7 @@ export default function TeacherStudentsPage() {
 
   const filtered = React.useMemo(() => {
     return students
-      .filter((s) => s.class_name === "3 «А»") // strict class isolation
+      .filter((s) => s.class_name === "2 «А»") // strict class isolation
       .filter((s) => {
         const matchesSearch = s.full_name.toLowerCase().includes(search.toLowerCase());
         const matchesLevel = levelFilter === "all" ? true : s.reading_level === levelFilter;
@@ -54,12 +54,12 @@ export default function TeacherStudentsPage() {
       <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4">
         <div>
           <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-edu-sky-100 text-edu-sky-800 text-xs font-black mb-1">
-            <span>🏫 №84 мектеп-лицейі</span>
+            <span>🏫 №271 мектеп-лицейі</span>
             <span>•</span>
-            <span>3 «А» сыныбы</span>
+            <span>2 «А» сыныбы</span>
           </div>
           <h1 className="text-2xl sm:text-3xl font-black text-slate-900">
-            3 «А» сынып оқушыларының тізімі 👥
+            2 «А» сынып оқушыларының тізімі 👥
           </h1>
           <p className="text-xs sm:text-sm font-semibold text-slate-500 mt-1">
             Оқушылардың жеке оқырмандық белсенділігі, жинаған ұпайлары мен істері

@@ -89,10 +89,10 @@ export default function TeacherDashboardPage() {
     reloadData();
   }, [reloadData]);
 
-  // Filter and sort students (Strictly only 3 «А» class!)
+  // Filter and sort students (Strictly only 2 «А» class!)
   const filteredStudents = React.useMemo(() => {
     return students
-      .filter((s) => s.class_name === "3 «А»") // strict class isolation
+      .filter((s) => s.class_name === "2 «А»") // strict class isolation
       .filter((s) => {
         const matchesSearch = s.full_name.toLowerCase().includes(searchQuery.toLowerCase());
         const matchesLevel =
@@ -134,7 +134,7 @@ export default function TeacherDashboardPage() {
           ? "family"
           : "content",
       title: toolTitle.trim(),
-      target_class: "3 «А»",
+      target_class: "2 «А»",
       description: toolDesc.trim() || "Сынып оқушыларына арналған тапсырма",
       deadline: toolDeadline,
       points_reward: toolPoints,
@@ -153,7 +153,7 @@ export default function TeacherDashboardPage() {
       colors: ["#38BDF8", "#FACC15", "#4ADE80", "#C084FC"],
     });
 
-    setToastMessage("Жаңа тапсырма 3 «А» сынып оқушыларына сәтті жіберілді! 📢");
+    setToastMessage("Жаңа тапсырма 2 «А» сынып оқушыларына сәтті жіберілді! 📢");
     setTimeout(() => setToastMessage(null), 4000);
   };
 
@@ -181,9 +181,9 @@ export default function TeacherDashboardPage() {
       <div className="relative overflow-hidden p-6 sm:p-9 rounded-4xl bg-gradient-to-r from-edu-sky-600 via-indigo-600 to-purple-600 text-white shadow-kid-md flex flex-col lg:flex-row items-start lg:items-center justify-between gap-6">
         <div className="space-y-2.5 max-w-2xl z-10">
           <div className="inline-flex items-center gap-2 px-3.5 py-1.5 rounded-full bg-white/20 backdrop-blur-md text-xs font-black">
-            <span>🏫 №84 мектеп-лицейі</span>
+            <span>🏫 №271 мектеп-лицейі</span>
             <span>•</span>
-            <span>3 «А» сыныбының жетекшісі</span>
+            <span>2 «А» сыныбының жетекшісі</span>
           </div>
 
           <h1 className="text-2xl sm:text-4xl font-black tracking-tight">
@@ -191,7 +191,7 @@ export default function TeacherDashboardPage() {
           </h1>
 
           <p className="text-sky-100 font-semibold text-xs sm:text-sm leading-relaxed">
-            Сіздің 3 «А» сыныбыңызда <strong>{totalStudents} оқушы</strong> белсенді оқу саяхатында.
+            Сіздің 2 «А» сыныбыңызда <strong>{totalStudents} оқушы</strong> белсенді оқу саяхатында.
             Бүгін <strong>{activeToday} оқушы</strong> жүйеге кіріп, тапсырмалар орындады.
           </p>
         </div>
@@ -241,7 +241,7 @@ export default function TeacherDashboardPage() {
         <div className="flex items-center justify-between">
           <h2 className="text-xl font-black text-slate-900 flex items-center gap-2">
             <TrendingUp className="w-5 h-5 text-edu-sky-600" />
-            <span>3 «А» сыныбының жиынтық көрсеткіштері</span>
+            <span>2 «А» сыныбының жиынтық көрсеткіштері</span>
           </h2>
           <span className="text-xs font-bold text-slate-500">
             Тек сіздің сыныбыңыз
@@ -344,7 +344,7 @@ export default function TeacherDashboardPage() {
               <span>Мұғалімнің жұмыс құралдары (Teacher Tools)</span>
             </h3>
             <p className="text-xs text-slate-500 font-bold">
-              3 «А» сыныбына арнап тапсырмалар беріңіз, викторина құрастырыңыз және контент қосыңыз
+              2 «А» сыныбына арнап тапсырмалар беріңіз, викторина құрастырыңыз және контент қосыңыз
             </p>
           </div>
         </div>
@@ -413,7 +413,7 @@ export default function TeacherDashboardPage() {
                 <span>Сынып белсенділігі мен көрсеткіштері</span>
               </h3>
               <Badge variant="sky" size="sm">
-                3 «А» мониторингі
+                2 «А» мониторингі
               </Badge>
             </div>
 
@@ -488,16 +488,16 @@ export default function TeacherDashboardPage() {
         </div>
       </div>
 
-      {/* 5. STUDENTS LIST TABLE (3 «А» сыныбы) */}
+      {/* 5. STUDENTS LIST TABLE (2 «А» сыныбы) */}
       <Card className="p-6 bg-white border-2 border-slate-200 space-y-5">
         <div className="flex flex-col md:flex-row md:items-center justify-between gap-4 border-b border-slate-100 pb-4">
           <div>
             <h3 className="text-xl font-black text-slate-900 flex items-center gap-2">
               <Users className="w-5 h-5 text-edu-sky-600" />
-              <span>3 «А» сыныбының оқушылары</span>
+              <span>2 «А» сыныбының оқушылары</span>
             </h3>
             <p className="text-xs text-slate-500 font-bold">
-              Барлығы: {filteredStudents.length} оқушы (Тек 3 «А» сыныбы көрсетіледі)
+              Барлығы: {filteredStudents.length} оқушы (Тек 2 «А» сыныбы көрсетіледі)
             </p>
           </div>
 
@@ -636,7 +636,7 @@ export default function TeacherDashboardPage() {
           <div className="flex items-center gap-2">
             <Heart className="w-5 h-5 text-rose-500 fill-rose-500" />
             <h3 className="text-lg font-black text-slate-800">
-              3 «А» оқушыларының жақсы істері (Мұғалімнің растауы)
+              2 «А» оқушыларының жақсы істері (Мұғалімнің растауы)
             </h3>
           </div>
           <Badge variant={pendingDeeds.length > 0 ? "coral" : "green"} size="sm">
@@ -661,7 +661,7 @@ export default function TeacherDashboardPage() {
                       {deed.value_emoji} {deed.value_name_kk}
                     </span>
                     <span className="text-[11px] font-bold text-slate-400">
-                      {deed.student_name} ({deed.student_class || "3 «А»"})
+                      {deed.student_name} ({deed.student_class || "2 «А»"})
                     </span>
                   </div>
                   <h4 className="font-extrabold text-sm text-slate-900">{deed.title}</h4>
@@ -704,7 +704,7 @@ export default function TeacherDashboardPage() {
               ? "Отбасылық тапсырма беру 👨‍👩‍👧"
               : "Жаңа контент қосу 📚"
           }
-          description="3 «А» сыныбының барлық оқушысына бір мезгілде жіберіледі."
+          description="2 «А» сыныбының барлық оқушысына бір мезгілде жіберіледі."
           emoji="👩‍🏫"
           maxWidth="md"
         >

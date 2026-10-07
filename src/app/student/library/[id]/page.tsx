@@ -31,6 +31,7 @@ import { Modal } from "@/components/ui/modal";
 import { Input } from "@/components/ui/input";
 import { Book } from "@/types/database.types";
 import { getFullBookById, getBookReadingPages } from "@/lib/book-progress";
+import { fairyTaleAudio, sfx } from "@/lib/audio-engine";
 import { cn } from "@/lib/utils";
 
 export default function BookDetailPage() {
@@ -50,7 +51,34 @@ export default function BookDetailPage() {
 
   // Audio State
   const [isPlaying, setIsPlaying] = React.useState(false);
-  const [audioProgress, setAudioProgress] = React.useState(25);
+  const [audioProgress, setAudioProgress] = React.useState(0);
+  const [audioSeconds, setAudioSeconds] = React.useState(0);
+
+  React.useEffect(() => {
+    const unsubscribe = fairyTaleAudio.subscribe((state) => {
+      setIsPlaying(state.isPlaying);
+      setAudioProgress(state.progressPercent);
+      setAudioSeconds(state.currentTimeSec);
+    });
+    return () => {
+      unsubscribe();
+      fairyTaleAudio.stop();
+    };
+  }, []);
+
+  const togglePlayAudio = () => {
+    const textToRead = bookPages.join(" ") || book.description;
+    fairyTaleAudio.toggle(textToRead, {
+      audioUrl: book.audio_url,
+      speed: 1.0,
+    });
+  };
+
+  const formatAudioTime = (sec: number) => {
+    const m = Math.floor(sec / 60);
+    const s = sec % 60;
+    return `${m.toString().padStart(2, "0")}:${s.toString().padStart(2, "0")}`;
+  };
 
   // Deed & Quiz Modals
   const [isDeedModalOpen, setIsDeedModalOpen] = React.useState(false);
@@ -72,6 +100,7 @@ export default function BookDetailPage() {
   };
 
   const handleNextPage = () => {
+    sfx.playPageTurn();
     if (currentPage < totalPages) {
       setCurrentPage((p) => p + 1);
     } else {
@@ -80,6 +109,7 @@ export default function BookDetailPage() {
   };
 
   const handlePrevPage = () => {
+    sfx.playPageTurn();
     if (currentPage > 1) {
       setCurrentPage((p) => p - 1);
     }
@@ -87,6 +117,7 @@ export default function BookDetailPage() {
 
   const handleCompleteReading = () => {
     setIsCompleted(true);
+    sfx.playSuccessSound();
     triggerConfetti();
   };
 
@@ -230,8 +261,9 @@ export default function BookDetailPage() {
           <div className="flex flex-col sm:flex-row items-center justify-between gap-4">
             <div className="flex items-center gap-3">
               <button
-                onClick={() => setIsPlaying(!isPlaying)}
-                className="w-14 h-14 rounded-full bg-amber-400 text-slate-950 flex items-center justify-center text-2xl font-black shadow-lg shadow-amber-300/40 border-4 border-white active:scale-95 transition-transform"
+                onClick={togglePlayAudio}
+                className="w-14 h-14 rounded-full bg-amber-400 hover:bg-amber-300 text-slate-950 flex items-center justify-center text-2xl font-black shadow-lg shadow-amber-300/40 border-4 border-white active:scale-95 transition-transform"
+                title={isPlaying ? "Тоқтату" : "Тыңдау"}
               >
                 {isPlaying ? <Pause className="w-6 h-6 fill-slate-950" /> : <Play className="w-6 h-6 fill-slate-950 ml-1" />}
               </button>
@@ -265,13 +297,13 @@ export default function BookDetailPage() {
 
           <div className="w-full space-y-1 pt-1">
             <div className="flex justify-between text-[11px] font-bold text-purple-100">
-              <span>{isPlaying ? "01:25" : "00:00"}</span>
+              <span>{formatAudioTime(audioSeconds)}</span>
               <span>{book.audio_duration || "04:15"}</span>
             </div>
             <div className="w-full h-2 rounded-full bg-white/20 overflow-hidden cursor-pointer">
               <div
                 className="h-full bg-amber-300 rounded-full transition-all"
-                style={{ width: isPlaying ? "35%" : "0%" }}
+                style={{ width: `${audioProgress}%` }}
               />
             </div>
           </div>

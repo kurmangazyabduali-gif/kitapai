@@ -48,6 +48,7 @@ import {
   BookProgressRecord,
 } from "@/lib/book-progress";
 import { cn } from "@/lib/utils";
+import { fairyTaleAudio, sfx } from "@/lib/audio-engine";
 
 export default function BookReadingPage() {
   const params = useParams();
@@ -175,40 +176,41 @@ export default function BookReadingPage() {
     });
   };
 
-  // 3. Audio Simulator Tick
+  // 3. Connect Real Audio Engine (Speech TTS + HTML5 Audio + SFX)
   React.useEffect(() => {
-    let interval: NodeJS.Timeout;
-    if (isPlaying) {
-      interval = setInterval(() => {
-        setAudioSeconds((prev) => {
-          if (prev >= totalAudioSeconds) {
-            setIsPlaying(false);
-            return 0;
-          }
-          const next = prev + 1;
-          // Synchronize reading page with audio progress
-          const simulatedPage = Math.min(
-            totalPages,
-            Math.floor((next / totalAudioSeconds) * totalPages) + 1
-          );
-          if (simulatedPage !== currentPage) {
-            setCurrentPage(simulatedPage);
-            persistCurrentProgress(simulatedPage);
-          }
-          return next;
-        });
-      }, 1000 / audioSpeed);
-    }
-    return () => clearInterval(interval);
-  }, [isPlaying, audioSpeed, currentPage, totalPages]);
+    const unsubscribe = fairyTaleAudio.subscribe((state) => {
+      setIsPlaying(state.isPlaying);
+      setAudioSeconds(state.currentTimeSec);
+    });
+
+    return () => {
+      unsubscribe();
+      fairyTaleAudio.stop();
+    };
+  }, []);
 
   // Audio helpers
   const togglePlayAudio = () => {
-    setIsPlaying(!isPlaying);
+    const textToRead = bookPages[currentPage - 1] || book.description;
+    fairyTaleAudio.toggle(textToRead, {
+      audioUrl: book.audio_url,
+      speed: audioSpeed,
+      estimatedDurationSec: totalAudioSeconds,
+      onFinish: () => {
+        if (currentPage < totalPages) {
+          handleNextPage();
+        }
+      },
+    });
   };
 
   const handleReplayAudio = () => {
-    setAudioSeconds((prev) => Math.max(0, prev - 10));
+    fairyTaleAudio.seek(Math.max(0, audioSeconds - 10));
+  };
+
+  const handleSpeedChange = (speed: number) => {
+    setAudioSpeed(speed);
+    fairyTaleAudio.setSpeed(speed);
   };
 
   const formatAudioTime = (sec: number) => {
@@ -219,24 +221,42 @@ export default function BookReadingPage() {
 
   // Navigation handlers
   const handleNextPage = () => {
+    sfx.playPageTurn();
     if (currentPage < totalPages) {
       const nextP = currentPage + 1;
       setCurrentPage(nextP);
       setIsBookmarked(isBookmarked && bookmarkedPage === nextP);
       persistCurrentProgress(nextP);
       window.scrollTo({ top: 0, behavior: "smooth" });
+
+      if (isPlaying) {
+        fairyTaleAudio.playStory(bookPages[nextP - 1] || book.description, {
+          audioUrl: book.audio_url,
+          speed: audioSpeed,
+          estimatedDurationSec: totalAudioSeconds,
+        });
+      }
     } else {
       handleCompleteBook();
     }
   };
 
   const handlePrevPage = () => {
+    sfx.playPageTurn();
     if (currentPage > 1) {
       const prevP = currentPage - 1;
       setCurrentPage(prevP);
       setIsBookmarked(isBookmarked && bookmarkedPage === prevP);
       persistCurrentProgress(prevP);
       window.scrollTo({ top: 0, behavior: "smooth" });
+
+      if (isPlaying) {
+        fairyTaleAudio.playStory(bookPages[prevP - 1] || book.description, {
+          audioUrl: book.audio_url,
+          speed: audioSpeed,
+          estimatedDurationSec: totalAudioSeconds,
+        });
+      }
     }
   };
 
@@ -761,7 +781,7 @@ export default function BookReadingPage() {
                   {[0.75, 1.0, 1.25].map((speed) => (
                     <button
                       key={speed}
-                      onClick={() => setAudioSpeed(speed)}
+                      onClick={() => handleSpeedChange(speed)}
                       className={cn(
                         "px-2 py-1 rounded-xl transition-all",
                         audioSpeed === speed

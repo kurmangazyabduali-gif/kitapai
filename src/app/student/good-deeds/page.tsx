@@ -112,7 +112,7 @@ function StudentGoodDeedsContent() {
       student_id: "student-1",
       student_name: "Аяла Ерболқызы",
       student_avatar: "🌸",
-      student_class: "3 «А»",
+      student_class: "2 «А»",
       deed_id: selectedTask.id,
       book_id: selectedTask.book_id,
       book_title: selectedTask.book_title,

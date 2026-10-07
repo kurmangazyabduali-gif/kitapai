@@ -16,25 +16,25 @@ export default function ParentChildPage() {
           Баламның оқу барысы мен жетістіктері 🎒
         </h1>
         <p className="text-xs sm:text-sm font-semibold text-slate-500 mt-1">
-          Алихан Сұлтанның оқылған кітаптары, тестілеу нәтижелері мен белсенділігі
+          Аяла Ерболқызының оқылған кітаптары, тестілеу нәтижелері мен белсенділігі
         </p>
       </div>
 
       <Card className="p-6 bg-white border-2 border-slate-200">
         <div className="flex flex-col sm:flex-row items-center sm:items-start gap-6">
-          <Avatar emoji="🦁" name="Алихан" size="xl" borderVariant="gold" />
+          <Avatar emoji="🌸" name="Аяла" size="xl" borderVariant="gold" />
           <div className="space-y-2 flex-1 text-center sm:text-left">
             <div className="flex flex-wrap items-center justify-center sm:justify-start gap-2">
               <Badge variant="sky" size="md">
-                3 «А» сыныбы
+                2 «А» сыныбы
               </Badge>
               <Badge variant="green" size="md">
                 Озат оқырман 🌟
               </Badge>
             </div>
-            <h2 className="text-2xl font-black text-slate-900">Алихан Сұлтан</h2>
+            <h2 className="text-2xl font-black text-slate-900">Аяла Ерболқызы</h2>
             <p className="text-xs font-bold text-slate-500">
-              №84 мектеп-лицейі • Сынып жетекшісі: Айнұр Серікқызы
+              №271 мектеп-лицейі • Сынып жетекшісі: Айнұр Серікқызы
             </p>
           </div>
 

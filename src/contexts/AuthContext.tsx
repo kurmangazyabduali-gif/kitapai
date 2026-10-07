@@ -50,12 +50,22 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
   const [user, setUser] = React.useState<Profile | null>(null);
   const [isLoading, setIsLoading] = React.useState(true);
 
-  // Initialize session from LocalStorage
+  // Initialize session from LocalStorage with auto-migration
   React.useEffect(() => {
     try {
       const savedUser = localStorage.getItem("kitaptan_auth_user");
       if (savedUser) {
         const parsed = JSON.parse(savedUser) as Profile;
+        // Auto-update student Ayala to 2nd grade and school #271
+        if (parsed.role === "student" || parsed.id === "student-1" || parsed.email === "ayala@kitaptan.kz") {
+          parsed.grade_level = 2;
+          parsed.school = "№271 мектеп-лицейі, Астана";
+          parsed.class_name = "2 «А» сыныбы";
+          localStorage.setItem("kitaptan_auth_user", JSON.stringify(parsed));
+        } else if (parsed.school && parsed.school.includes("84")) {
+          parsed.school = parsed.school.replace(/84/g, "271");
+          localStorage.setItem("kitaptan_auth_user", JSON.stringify(parsed));
+        }
         setUser(parsed);
       } else {
         // Default to demo student for interactive preview
@@ -119,8 +129,8 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
         full_name: data.fullName,
         role: data.role,
         grade_level: data.gradeLevel || (data.role === "student" ? 2 : undefined),
-        school: data.school || "№84 мектеп-лицейі",
-        avatar_emoji: data.avatarEmoji || (data.role === "student" ? "🦁" : "👤"),
+        school: data.school || "№271 мектеп-лицейі",
+        avatar_emoji: data.avatarEmoji || (data.role === "student" ? "🌸" : "👤"),
         coins: 100, // Welcome bonus
         stars: 50,
         streak_days: 1,

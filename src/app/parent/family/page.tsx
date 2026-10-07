@@ -116,7 +116,7 @@ export default function ParentFamilyPage() {
         <div className="flex items-center gap-3 p-4 rounded-3xl bg-white/15 backdrop-blur-md border border-white/20 text-white">
           <div className="text-right">
             <p className="text-xs font-bold text-emerald-200">Баласы:</p>
-            <p className="text-sm font-black">Аяла Ерболқызы (3 «А»)</p>
+            <p className="text-sm font-black">Аяла Ерболқызы (2 «А»)</p>
           </div>
           <Avatar emoji="🌸" name="Аяла" size="md" borderVariant="gold" />
         </div>

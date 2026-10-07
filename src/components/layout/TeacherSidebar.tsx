@@ -80,7 +80,7 @@ export function TeacherSidebar({ className }: { className?: string }) {
             Бастауыш сынып мұғалімі
           </p>
           <span className="text-[11px] font-extrabold text-slate-500 bg-white px-2.5 py-0.5 rounded-full border border-slate-200 mt-2">
-            3 «А» сынып жетекшісі
+            2 «А» сынып жетекшісі
           </span>
         </div>
 
